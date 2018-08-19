@@ -1,0 +1,13 @@
+D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\XmlValidator.exe.config
+D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\XmlValidator.exe
+D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\XmlValidator.pdb
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.csprojAssemblyReference.cache
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.Properties.Resources.resources
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.csproj.GenerateResource.cache
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.csproj.CoreCompileInputs.cache
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.exe
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.pdb
+D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\FastColoredTextBox.dll
+D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\FastColoredTextBox.xml
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.Editor.resources
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.csproj.CopyComplete

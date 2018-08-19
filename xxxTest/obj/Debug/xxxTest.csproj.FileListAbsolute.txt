@@ -1,0 +1,12 @@
+D:\Projekti\GIT\xmlvalidator\xxxTest\bin\Debug\xxxTest.exe.config
+D:\Projekti\GIT\xmlvalidator\xxxTest\bin\Debug\xxxTest.exe
+D:\Projekti\GIT\xmlvalidator\xxxTest\bin\Debug\xxxTest.pdb
+D:\Projekti\GIT\xmlvalidator\xxxTest\bin\Debug\FastColoredTextBox.dll
+D:\Projekti\GIT\xmlvalidator\xxxTest\bin\Debug\FastColoredTextBox.xml
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.Form1.resources
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.Properties.Resources.resources
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.csproj.GenerateResource.cache
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.csproj.CoreCompileInputs.cache
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.csproj.CopyComplete
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.exe
+D:\Projekti\GIT\xmlvalidator\xxxTest\obj\Debug\xxxTest.pdb
