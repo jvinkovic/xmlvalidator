@@ -9,5 +9,5 @@ D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.exe
 D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.pdb
 D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\FastColoredTextBox.dll
 D:\Projekti\GIT\xmlvalidator\XmlValidator\bin\Debug\FastColoredTextBox.xml
-D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.Editor.resources
 D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.csproj.CopyComplete
+D:\Projekti\GIT\xmlvalidator\XmlValidator\obj\Debug\XmlValidator.EditorForm.resources

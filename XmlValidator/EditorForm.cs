@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FastColoredTextBoxNS;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -39,13 +40,15 @@ namespace XmlValidator
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    if (null == _editor.OpenXML(ofd.FileName))
+                    string content = _editor.OpenXML(ofd.FileName);
+                    if (null == content)
                     {
                         MessageBox.Show("Error in opening file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
                         this.Text = FORM_TITLE + " | " + _editor.XmlName;
+                        this.editorBox.Text = content;
                     }
                 }
             }
@@ -71,7 +74,7 @@ namespace XmlValidator
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CloseIt();
+            Close();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -81,20 +84,79 @@ namespace XmlValidator
 
         private void xSDToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.CheckFileExists = true;
+                ofd.CheckPathExists = true;
+                ofd.DefaultExt = "xsd";
+                ofd.Multiselect = false;
+                ofd.Title = "Open XSD";
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    string xsdFilename = _editor.OpenXSD(ofd.FileName);
+
+                    if (null == xsdFilename)
+                    {
+                        MessageBox.Show("Error in opening file!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        tbCurrentXSD.Text = xsdFilename;
+                    }
+                }
+            }
         }
 
         private void checkToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            CheckXML();
         }
 
         private void fctb_TextChanged(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
         {
-            _editor.FileChanged();
+            _editor?.FileChanged();
+        }
+
+        private void fontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (FontDialog fd = new FontDialog())
+            {
+                fd.FontMustExist = true;
+                fd.ShowColor = true;
+                fd.ShowEffects = true;
+                fd.AllowVectorFonts = false;
+                fd.AllowVerticalFonts = false;
+                fd.FixedPitchOnly = true;
+
+                fd.ShowApply = true;
+                fd.Apply += applyFont;
+
+                if (DialogResult.OK == fd.ShowDialog())
+                {
+                    editorBox.Font = fd.Font;
+                }
+            }
+        }
+
+        private void applyFont(object sender, EventArgs e)
+        {
+            editorBox.Font = ((FontDialog)sender).Font;
+        }
+
+        private void hotkeysToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new HotkeysEditorForm(editorBox.HotkeysMapping);
+            if (form.ShowDialog() == DialogResult.OK)
+                editorBox.HotkeysMapping = form.GetHotkeys();
         }
 
         private void EditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CloseIt();
+            if (false == CheckIfIsChanged())
+            {
+                e.Cancel = true;
+            }
         }
 
         #endregion handlers
@@ -125,14 +187,6 @@ namespace XmlValidator
             return true;
         }
 
-        public void CloseIt()
-        {
-            if (CheckIfIsChanged())
-            {
-                Close();
-            }
-        }
-
         public void SaveXML()
         {
             _editor.SaveXML(editorBox.Text);
@@ -140,7 +194,7 @@ namespace XmlValidator
 
         public void CheckXML()
         {
-            // TODO
+            // TODO check handling
             _editor.CheckXML(editorBox.Text);
         }
     }
