@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace XmlValidator
 {
@@ -35,6 +36,7 @@ namespace XmlValidator
                 ofd.CheckFileExists = true;
                 ofd.CheckPathExists = true;
                 ofd.DefaultExt = "xml";
+                ofd.Filter = "XML files (*.xml)|*.xml";
                 ofd.Multiselect = false;
                 ofd.Title = "Open XML";
 
@@ -58,7 +60,9 @@ namespace XmlValidator
         {
             if (CheckIfIsChanged())
             {
+                var xsd = _editor.GetXSD();
                 _editor = new Editor();
+                _editor.SetXSD(xsd);
             }
         }
 
@@ -89,6 +93,7 @@ namespace XmlValidator
                 ofd.CheckFileExists = true;
                 ofd.CheckPathExists = true;
                 ofd.DefaultExt = "xsd";
+                ofd.Filter = "XSD files (*.xsd)|*.xsd";
                 ofd.Multiselect = false;
                 ofd.Title = "Open XSD";
 
@@ -151,6 +156,16 @@ namespace XmlValidator
                 editorBox.HotkeysMapping = form.GetHotkeys();
         }
 
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            editorBox.Undo();
+        }
+
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            editorBox.Redo();
+        }
+
         private void EditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (false == CheckIfIsChanged())
@@ -194,8 +209,37 @@ namespace XmlValidator
 
         public void CheckXML()
         {
-            // TODO check handling
-            _editor.CheckXML(editorBox.Text);
+            string xml = editorBox.Text;
+
+            // heck if xml is empty
+            if (string.IsNullOrEmpty(xml))
+            {
+                MessageBox.Show("XML is empty", "Empty XML", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // validate XML for basic structure only first
+            try
+            {
+                new XmlDocument().Load(xml);
+            }
+            catch (XmlException)
+            {
+                // xml string is invalid
+                MessageBox.Show("XML is invalid", "Invalid XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (_editor.CheckXML(xml))
+            {
+                MessageBox.Show("XML is VALID!", "XML VALID", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                // xml is invalid against schema
+                MessageBox.Show("XML is not valid against selected XSD schema", "Invalid XML against XSD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace XmlValidator
         public string XmlName = "Untitled";
 
         private string _xmlPath;
-        private string _xsdPath;
+        private XSDData _xsd;
         private bool _fileChanged;
 
         /// <summary>
@@ -32,22 +32,35 @@ namespace XmlValidator
         /// <returns>filename if succesfull, otherwise null</returns>
         public string OpenXSD(string path)
         {
-            // TOOD
-            return null;
+            _xsd = new XSDData(path);
+            return _xsd.Name;
+        }
+
+        public XSDData GetXSD()
+        {
+            return _xsd;
+        }
+
+        public void SetXSD(XSDData xsd)
+        {
+            _xsd = xsd;
         }
 
         public bool SaveXML(string xml)
         {
+            // TODO
             throw new NotImplementedException();
         }
 
         public bool SaveXMLAs(string xml)
         {
+            // TODO
             throw new NotImplementedException();
         }
 
         public bool CheckXML(string xml)
         {
+            // TODO
             throw new NotImplementedException();
         }
 
@@ -55,6 +68,7 @@ namespace XmlValidator
         {
             _fileChanged = true;
         }
+
         public bool IsFileChanged()
         {
             return _fileChanged;
