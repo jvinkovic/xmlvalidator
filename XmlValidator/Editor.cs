@@ -81,11 +81,11 @@ namespace XmlValidator
             }
         }
 
-        public ValidationData CheckXML(string xml)
+        public ValidationData CheckXML(string xml, bool omitNamespace)
         {
             var validator = new ValidateWithXSD(ref xml, _xsd);
 
-            var result = validator.Validate();
+            var result = validator.Validate(omitNamespace);
             return result;
         }
 

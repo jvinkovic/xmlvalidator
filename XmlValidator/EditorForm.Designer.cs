@@ -53,8 +53,10 @@
             this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.omitNamespaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbCurrentXSD = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.withNamespaceCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.editorBox)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -279,19 +281,29 @@
             // 
             // checkToolStripMenuItem
             // 
+            this.checkToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.withNamespaceCheckToolStripMenuItem,
+            this.omitNamespaceToolStripMenuItem});
             this.checkToolStripMenuItem.Name = "checkToolStripMenuItem";
             this.checkToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.checkToolStripMenuItem.Text = "&Check";
-            this.checkToolStripMenuItem.Click += new System.EventHandler(this.checkToolStripMenuItem_Click);
+            // 
+            // omitNamespaceToolStripMenuItem
+            // 
+            this.omitNamespaceToolStripMenuItem.Name = "omitNamespaceToolStripMenuItem";
+            this.omitNamespaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.omitNamespaceToolStripMenuItem.Text = "&Omit Namespace";
+            this.omitNamespaceToolStripMenuItem.ToolTipText = "Validate without namespace check";
+            this.omitNamespaceToolStripMenuItem.Click += new System.EventHandler(this.omitNamespaceToolStripMenuItem_Click);
             // 
             // tbCurrentXSD
             // 
             this.tbCurrentXSD.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbCurrentXSD.Location = new System.Drawing.Point(215, 496);
+            this.tbCurrentXSD.Location = new System.Drawing.Point(195, 496);
             this.tbCurrentXSD.Name = "tbCurrentXSD";
             this.tbCurrentXSD.ReadOnly = true;
-            this.tbCurrentXSD.Size = new System.Drawing.Size(497, 20);
+            this.tbCurrentXSD.Size = new System.Drawing.Size(536, 20);
             this.tbCurrentXSD.TabIndex = 4;
             this.tbCurrentXSD.TabStop = false;
             // 
@@ -301,11 +313,19 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(132, 499);
+            this.label1.Location = new System.Drawing.Point(112, 499);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(77, 13);
             this.label1.TabIndex = 55;
             this.label1.Text = "Current XSD";
+            // 
+            // withNamespaceCheckToolStripMenuItem
+            // 
+            this.withNamespaceCheckToolStripMenuItem.Name = "withNamespaceCheckToolStripMenuItem";
+            this.withNamespaceCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.withNamespaceCheckToolStripMenuItem.Text = "&With Namespace";
+            this.withNamespaceCheckToolStripMenuItem.ToolTipText = "Validate with namespace checks";
+            this.withNamespaceCheckToolStripMenuItem.Click += new System.EventHandler(this.checkToolStripMenuItem_Click);
             // 
             // EditorForm
             // 
@@ -357,6 +377,8 @@
         private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem omitNamespaceToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem withNamespaceCheckToolStripMenuItem;
     }
 }
 

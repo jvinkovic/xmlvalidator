@@ -155,6 +155,11 @@ namespace XmlValidator
             CheckIt();
         }
 
+        private void omitNamespaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CheckIt(true);
+        }
+
         private void btnCheck_Click(object sender, EventArgs e)
         {
             CheckIt();
@@ -254,7 +259,7 @@ namespace XmlValidator
             _editor.SaveXML(editorBox.Text);
         }
 
-        private void CheckIt()
+        private void CheckIt(bool omitNamespace = false)
         {
             if (null == _editor.GetXSD())
             {
@@ -262,10 +267,10 @@ namespace XmlValidator
                 return;
             }
 
-            Task.Run(CheckXML);
+            Task.Run(async () => CheckXML(omitNamespace));
         }
 
-        private async Task CheckXML()
+        private async Task CheckXML(bool omitNamespace = false)
         {
             string xml = editorBox.Text;
 
@@ -310,7 +315,7 @@ namespace XmlValidator
                 return;
             }
 
-            var validationResult = _editor.CheckXML(xml);
+            var validationResult = _editor.CheckXML(xml, omitNamespace);
 
             using (var validDetailsForm = new ValidationDetails(validationResult))
             {

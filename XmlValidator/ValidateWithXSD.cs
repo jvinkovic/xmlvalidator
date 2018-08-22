@@ -20,7 +20,7 @@ namespace XmlValidator
             _xsdData = xsd;
         }
 
-        public ValidationData Validate()
+        public ValidationData Validate(bool omitNamespace)
         {
             validationResult = new ValidationData();
 
@@ -28,23 +28,16 @@ namespace XmlValidator
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.ValidationType = ValidationType.Schema;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessIdentityConstraints | XmlSchemaValidationFlags.ProcessInlineSchema
-                                        | XmlSchemaValidationFlags.ProcessSchemaLocation | XmlSchemaValidationFlags.ReportValidationWarnings;
+                                        | XmlSchemaValidationFlags.ProcessSchemaLocation;
+
+            if (false == omitNamespace)
+            {
+                settings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+            }
+
             settings.ValidationEventHandler += ValidationErrorsHandler;
 
             var schemas = new XmlSchemaSet();
-
-            try
-            {
-                schemas.Add(null, _xsdData?.Path); // null - using targetNamespace from the schema
-                schemas.Compile(); // compile all into one logical schema
-
-                settings.Schemas = schemas;
-            }
-            catch (Exception ex)
-            {
-                validationResult.Valid = false;
-                validationResult.Errors.Add("ERROR: XSD SCHEMA INVALID - " + ex.Message);
-            }
 
             try
             {
@@ -52,6 +45,19 @@ namespace XmlValidator
                 {
                     using (var xmlReader = XmlReader.Create(stringXmlReader, settings))
                     {
+                        try
+                        {
+                            schemas.Add(null, _xsdData?.Path); // null - using targetNamespace from the schema
+                            schemas.Compile(); // compile all into one logical schema
+
+                            settings.Schemas = schemas;
+                        }
+                        catch (Exception ex)
+                        {
+                            validationResult.Valid = false;
+                            validationResult.Errors.Add("ERROR: XSD SCHEMA INVALID - " + ex.Message);
+                        }
+
                         while (xmlReader.Read()) ;
                     }
                 }
