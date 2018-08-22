@@ -26,7 +26,7 @@ namespace XmlValidator
         }
 
         /// <summary>
-        /// easter egg
+        /// easter egg for open XML and XSD
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
