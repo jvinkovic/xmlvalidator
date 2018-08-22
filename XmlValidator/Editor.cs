@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace XmlValidator
 {
@@ -22,6 +20,8 @@ namespace XmlValidator
         /// <returns>file content if succesfull, otherwise null</returns>
         public string OpenXML(string path)
         {
+            XmlName = Path.GetFileName(path);
+            _xmlPath = path;
             return File.ReadAllText(path);
         }
 
@@ -48,20 +48,45 @@ namespace XmlValidator
 
         public bool SaveXML(string xml)
         {
-            // TODO
-            throw new NotImplementedException();
+            try
+            {
+                File.WriteAllText(_xmlPath ?? XmlName + ".xml", xml, Encoding.UTF8);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public bool SaveXMLAs(string xml)
         {
-            // TODO
-            throw new NotImplementedException();
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.AddExtension = true;
+                sfd.CheckPathExists = true;
+                sfd.DefaultExt = "xlm";
+                sfd.OverwritePrompt = true;
+                sfd.Title = "Save XML";
+
+                DialogResult result = sfd.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    return true;
+                }
+
+                return false;
+            }
         }
 
-        public bool CheckXML(string xml)
+        public async Task<ValidationData> CheckXML(string xml)
         {
-            // TODO
-            throw new NotImplementedException();
+            var validator = new ValidateWithXSD(ref xml, _xsd);
+
+            var result = await validator.Validate();
+            return result;
         }
 
         public void FileChanged()

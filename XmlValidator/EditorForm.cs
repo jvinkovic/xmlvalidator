@@ -1,11 +1,5 @@
 ﻿using FastColoredTextBoxNS;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -18,16 +12,39 @@ namespace XmlValidator
 
         private Editor _editor;
 
+        private ShowXSD xsdForm;
+
         public EditorForm()
 
         {
             InitializeComponent();
-            this.Text = FORM_TITLE;
+            this.Text = FORM_TITLE + "| Untitled";
 
             _editor = new Editor();
+
+            editorBox.CustomAction += EditorBox_CustomAction;
         }
 
-        #region handlers
+        /// <summary>
+        /// easter egg
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditorBox_CustomAction(object sender, CustomActionEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case FCTBAction.CustomAction1:
+                    openToolStripMenuItem_Click(null, null);
+                    break;
+
+                case FCTBAction.CustomAction2:
+                    openXSDToolStripMenuItem_Click(null, null);
+                    break;
+            }
+        }
+
+        #region event handlers
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -64,6 +81,8 @@ namespace XmlValidator
                 _editor = new Editor();
                 _editor.SetXSD(xsd);
             }
+
+            this.Text = FORM_TITLE + "| Untitled";
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -86,7 +105,7 @@ namespace XmlValidator
             SaveXML();
         }
 
-        private void xSDToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openXSDToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
@@ -113,7 +132,29 @@ namespace XmlValidator
             }
         }
 
+        private void showXSDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (null != xsdForm)
+            {
+                xsdForm.Dispose();
+            }
+
+            xsdForm = new ShowXSD(_editor?.GetXSD());
+            xsdForm.Owner = this;
+
+            var location = this.Location;
+            location.X += this.Width - 20;
+            xsdForm.Location = location;
+
+            xsdForm.Show();
+        }
+
         private void checkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CheckXML();
+        }
+
+        private void btnCheck_Click(object sender, EventArgs e)
         {
             CheckXML();
         }
@@ -174,13 +215,18 @@ namespace XmlValidator
             }
         }
 
-        #endregion handlers
+        private void editorBox_KeyPressed(object sender, KeyPressEventArgs e)
+        {
+            // TODO handle key inputs and drop down suggestions
+        }
+
+        #endregion event handlers
 
         /// <summary>
         /// checks if text is changed
         /// </summary>
         /// <returns>true if it can be overwriten</returns>
-        public bool CheckIfIsChanged()
+        private bool CheckIfIsChanged()
         {
             if (_editor.IsFileChanged())
             {
@@ -202,43 +248,72 @@ namespace XmlValidator
             return true;
         }
 
-        public void SaveXML()
+        private void SaveXML()
         {
             _editor.SaveXML(editorBox.Text);
         }
 
-        public void CheckXML()
+        private void CheckXML()
+        {
+            if (null == _editor.GetXSD())
+            {
+                MessageBox.Show("XSD schema file not selected", "No XSD", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Task.Run(CheckXMLAsync);
+        }
+
+        private async Task CheckXMLAsync()
         {
             string xml = editorBox.Text;
 
             // heck if xml is empty
             if (string.IsNullOrEmpty(xml))
             {
-                MessageBox.Show("XML is empty", "Empty XML", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        MessageBox.Show("XML is empty", "Empty XML", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("XML is empty", "Empty XML", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
                 return;
             }
 
             // validate XML for basic structure only first
             try
             {
-                new XmlDocument().Load(xml);
+                new XmlDocument().LoadXml(xml);
             }
-            catch (XmlException)
+            catch (Exception)
             {
-                // xml string is invalid
-                MessageBox.Show("XML is invalid", "Invalid XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (InvokeRequired)
+                {
+                    Invoke((MethodInvoker)delegate
+                    {
+                        // xml string is invalid
+                        MessageBox.Show("XML is invalid", "Invalid XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
+                }
+                else
+                {
+                    // xml string is invalid
+                    MessageBox.Show("XML is invalid", "Invalid XML", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
                 return;
             }
 
-            if (_editor.CheckXML(xml))
+            var validationResult = await _editor.CheckXML(xml);
+
+            using (var validDetailsForm = new ValidationDetails(validationResult))
             {
-                MessageBox.Show("XML is VALID!", "XML VALID", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                // xml is invalid against schema
-                MessageBox.Show("XML is not valid against selected XSD schema", "Invalid XML against XSD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                validDetailsForm.ShowDialog();
             }
         }
     }

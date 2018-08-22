@@ -50,6 +50,8 @@
             this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xSDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbCurrentXSD = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -83,7 +85,6 @@
             this.editorBox.CommentPrefix = null;
             this.editorBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.editorBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
-            this.editorBox.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.editorBox.Hotkeys = resources.GetString("editorBox.Hotkeys");
             this.editorBox.IsReplaceMode = false;
             this.editorBox.Language = FastColoredTextBoxNS.Language.XML;
@@ -102,6 +103,7 @@
             this.editorBox.TabLength = 2;
             this.editorBox.Zoom = 100;
             this.editorBox.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.fctb_TextChanged);
+            this.editorBox.KeyPressed += new System.Windows.Forms.KeyPressEventHandler(this.editorBox_KeyPressed);
             // 
             // btnSave
             // 
@@ -125,6 +127,7 @@
             this.btnCheck.TabIndex = 4;
             this.btnCheck.Text = "Check XML";
             this.btnCheck.UseVisualStyleBackColor = true;
+            this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
             // 
             // menuStrip
             // 
@@ -174,6 +177,7 @@
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(123, 22);
             this.openToolStripMenuItem.Text = "&Open";
+            this.openToolStripMenuItem.ToolTipText = "Open XML";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
@@ -238,23 +242,40 @@
             // undoToolStripMenuItem
             // 
             this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.undoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.undoToolStripMenuItem.Text = "&Undo";
             this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
             // redoToolStripMenuItem
             // 
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.redoToolStripMenuItem.Text = "&Redo";
             this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
             // 
             // xSDToolStripMenuItem
             // 
+            this.xSDToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem1,
+            this.showToolStripMenuItem});
             this.xSDToolStripMenuItem.Name = "xSDToolStripMenuItem";
             this.xSDToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
             this.xSDToolStripMenuItem.Text = "&XSD";
-            this.xSDToolStripMenuItem.Click += new System.EventHandler(this.xSDToolStripMenuItem_Click);
+            this.xSDToolStripMenuItem.ToolTipText = "Select XSD";
+            // 
+            // openToolStripMenuItem1
+            // 
+            this.openToolStripMenuItem1.Name = "openToolStripMenuItem1";
+            this.openToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
+            this.openToolStripMenuItem1.Text = "&Open";
+            this.openToolStripMenuItem1.Click += new System.EventHandler(this.openXSDToolStripMenuItem_Click);
+            // 
+            // showToolStripMenuItem
+            // 
+            this.showToolStripMenuItem.Name = "showToolStripMenuItem";
+            this.showToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.showToolStripMenuItem.Text = "&Show";
+            this.showToolStripMenuItem.Click += new System.EventHandler(this.showXSDToolStripMenuItem_Click);
             // 
             // checkToolStripMenuItem
             // 
@@ -334,6 +355,8 @@
         private System.Windows.Forms.ToolStripMenuItem hotkeysToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
     }
 }
 

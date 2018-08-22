@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace XmlValidator
 {
@@ -14,7 +11,9 @@ namespace XmlValidator
 
         public XSDData(string path)
         {
-            // TODO open and read XSD
+            Path = path;
+            Name = System.IO.Path.GetFileName(path);
+            Content = File.ReadAllText(path, Encoding.UTF8);
         }
     }
 }
