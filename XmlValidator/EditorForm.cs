@@ -160,6 +160,11 @@ namespace XmlValidator
             CheckIt(true);
         }
 
+        private void btnCheck_MouseHover(object sender, EventArgs e)
+        {
+            tooltip.SetToolTip(sender as Control, "Validation with namespace checks");
+        }
+
         private void btnCheck_Click(object sender, EventArgs e)
         {
             CheckIt();

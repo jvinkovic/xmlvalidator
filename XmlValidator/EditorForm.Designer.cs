@@ -53,10 +53,11 @@
             this.openToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.showToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.withNamespaceCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.omitNamespaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbCurrentXSD = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.withNamespaceCheckToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tooltip = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.editorBox)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -130,6 +131,7 @@
             this.btnCheck.Text = "Check XML";
             this.btnCheck.UseVisualStyleBackColor = true;
             this.btnCheck.Click += new System.EventHandler(this.btnCheck_Click);
+            this.btnCheck.MouseHover += new System.EventHandler(this.btnCheck_MouseHover);
             // 
             // menuStrip
             // 
@@ -288,10 +290,18 @@
             this.checkToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
             this.checkToolStripMenuItem.Text = "&Check";
             // 
+            // withNamespaceCheckToolStripMenuItem
+            // 
+            this.withNamespaceCheckToolStripMenuItem.Name = "withNamespaceCheckToolStripMenuItem";
+            this.withNamespaceCheckToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.withNamespaceCheckToolStripMenuItem.Text = "&With Namespace";
+            this.withNamespaceCheckToolStripMenuItem.ToolTipText = "Validate with namespace checks";
+            this.withNamespaceCheckToolStripMenuItem.Click += new System.EventHandler(this.checkToolStripMenuItem_Click);
+            // 
             // omitNamespaceToolStripMenuItem
             // 
             this.omitNamespaceToolStripMenuItem.Name = "omitNamespaceToolStripMenuItem";
-            this.omitNamespaceToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.omitNamespaceToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.omitNamespaceToolStripMenuItem.Text = "&Omit Namespace";
             this.omitNamespaceToolStripMenuItem.ToolTipText = "Validate without namespace check";
             this.omitNamespaceToolStripMenuItem.Click += new System.EventHandler(this.omitNamespaceToolStripMenuItem_Click);
@@ -319,13 +329,9 @@
             this.label1.TabIndex = 55;
             this.label1.Text = "Current XSD";
             // 
-            // withNamespaceCheckToolStripMenuItem
+            // tooltip
             // 
-            this.withNamespaceCheckToolStripMenuItem.Name = "withNamespaceCheckToolStripMenuItem";
-            this.withNamespaceCheckToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.withNamespaceCheckToolStripMenuItem.Text = "&With Namespace";
-            this.withNamespaceCheckToolStripMenuItem.ToolTipText = "Validate with namespace checks";
-            this.withNamespaceCheckToolStripMenuItem.Click += new System.EventHandler(this.checkToolStripMenuItem_Click);
+            this.tooltip.AutomaticDelay = 300;
             // 
             // EditorForm
             // 
@@ -379,6 +385,7 @@
         private System.Windows.Forms.ToolStripMenuItem showToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem omitNamespaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem withNamespaceCheckToolStripMenuItem;
+        private System.Windows.Forms.ToolTip tooltip;
     }
 }
 
