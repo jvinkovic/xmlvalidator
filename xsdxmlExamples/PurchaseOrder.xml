@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PurchaseOrder OrderDate="2012-12-13" xmlns="http://tempuri.org/PurchaseOrderSchema.xsd">
+  <ShipTo country="US">
+    <name>str1234</name>
+    <street>str1234</street>
+    <city>str1234</city>
+    <state>str1234</state>
+    <zip>1234</zip>
+  </ShipTo>
+  <BillTo country="US">
+    <name>str1234</name>
+    <street>str1234</street>
+    <city>str1234</city>
+    <state>str1234</state>
+    <zip>1234</zip>
+  </BillTo>
+</PurchaseOrder>

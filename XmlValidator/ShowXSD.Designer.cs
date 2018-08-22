@@ -34,7 +34,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.xsdContentBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // xsdContent
+            // xsdContentBox
             // 
             this.xsdContentBox.AutoCompleteBracketsList = new char[] {
         '(',
@@ -56,19 +56,18 @@
             this.xsdContentBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.xsdContentBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.xsdContentBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.xsdContentBox.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.xsdContentBox.IsReplaceMode = false;
             this.xsdContentBox.Language = FastColoredTextBoxNS.Language.XML;
             this.xsdContentBox.LeftBracket = '<';
             this.xsdContentBox.LeftBracket2 = '(';
             this.xsdContentBox.Location = new System.Drawing.Point(0, 0);
-            this.xsdContentBox.Name = "xsdContent";
+            this.xsdContentBox.Name = "xsdContentBox";
             this.xsdContentBox.Paddings = new System.Windows.Forms.Padding(0);
             this.xsdContentBox.ReadOnly = true;
             this.xsdContentBox.RightBracket = '>';
             this.xsdContentBox.RightBracket2 = ')';
             this.xsdContentBox.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
-            this.xsdContentBox.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("xsdContent.ServiceColors")));
+            this.xsdContentBox.ServiceColors = ((FastColoredTextBoxNS.ServiceColors)(resources.GetObject("xsdContentBox.ServiceColors")));
             this.xsdContentBox.Size = new System.Drawing.Size(616, 467);
             this.xsdContentBox.TabIndex = 0;
             this.xsdContentBox.Zoom = 100;
@@ -81,7 +80,6 @@
             this.Controls.Add(this.xsdContentBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ShowXSD";
-            this.ShowInTaskbar = false;
             this.Text = "XSD";
             ((System.ComponentModel.ISupportInitialize)(this.xsdContentBox)).EndInit();
             this.ResumeLayout(false);

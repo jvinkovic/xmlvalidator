@@ -63,7 +63,7 @@
             this.ClientSize = new System.Drawing.Size(520, 281);
             this.Controls.Add(this.lblValidity);
             this.Controls.Add(this.lbErrors);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "ValidationDetails";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

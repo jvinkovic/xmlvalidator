@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Schema;
 
 namespace XmlValidator
 {
@@ -151,12 +152,12 @@ namespace XmlValidator
 
         private void checkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CheckXML();
+            CheckIt();
         }
 
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            CheckXML();
+            CheckIt();
         }
 
         private void fctb_TextChanged(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
@@ -253,7 +254,7 @@ namespace XmlValidator
             _editor.SaveXML(editorBox.Text);
         }
 
-        private void CheckXML()
+        private void CheckIt()
         {
             if (null == _editor.GetXSD())
             {
@@ -261,10 +262,10 @@ namespace XmlValidator
                 return;
             }
 
-            Task.Run(CheckXMLAsync);
+            Task.Run(CheckXML);
         }
 
-        private async Task CheckXMLAsync()
+        private async Task CheckXML()
         {
             string xml = editorBox.Text;
 
@@ -309,7 +310,7 @@ namespace XmlValidator
                 return;
             }
 
-            var validationResult = await _editor.CheckXML(xml);
+            var validationResult = _editor.CheckXML(xml);
 
             using (var validDetailsForm = new ValidationDetails(validationResult))
             {

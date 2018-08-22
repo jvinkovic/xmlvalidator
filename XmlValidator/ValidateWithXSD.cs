@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -19,7 +20,7 @@ namespace XmlValidator
             _xsdData = xsd;
         }
 
-        public async Task<ValidationData> Validate()
+        public ValidationData Validate()
         {
             validationResult = new ValidationData();
 
@@ -28,21 +29,35 @@ namespace XmlValidator
             settings.ValidationType = ValidationType.Schema;
             settings.ValidationFlags |= XmlSchemaValidationFlags.ProcessIdentityConstraints | XmlSchemaValidationFlags.ProcessInlineSchema
                                         | XmlSchemaValidationFlags.ProcessSchemaLocation | XmlSchemaValidationFlags.ReportValidationWarnings;
-            settings.IgnoreComments = true;
-
-            // Create the XmlDocument object.
-            XDocument doc = XDocument.Parse(_xmlContent);
+            settings.ValidationEventHandler += ValidationErrorsHandler;
 
             var schemas = new XmlSchemaSet();
-            using (var stringReader = new StringReader(_xsdData?.Content))
-            {
-                using (var xmlReader = XmlReader.Create(stringReader))
-                {
-                    schemas.Add("", xmlReader);
 
-                    doc.Validate(schemas, ValidationErrorsHandler);
+            try
+            {
+                schemas.Add(null, _xsdData?.Path); // null - using targetNamespace from the schema
+                schemas.Compile(); // compile all into one logical schema
+
+                settings.Schemas = schemas;
+            }
+            catch (Exception ex)
+            {
+                validationResult.Valid = false;
+                validationResult.Errors.Add("ERROR: XSD SCHEMA INVALID - " + ex.Message);
+            }
+
+            try
+            {
+                using (var stringXmlReader = new StringReader(_xmlContent))
+                {
+                    using (var xmlReader = XmlReader.Create(stringXmlReader, settings))
+                    {
+                        while (xmlReader.Read()) ;
+                    }
                 }
             }
+            catch (Exception ex)
+            { }
 
             return validationResult;
         }

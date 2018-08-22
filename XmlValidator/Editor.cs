@@ -81,11 +81,11 @@ namespace XmlValidator
             }
         }
 
-        public async Task<ValidationData> CheckXML(string xml)
+        public ValidationData CheckXML(string xml)
         {
             var validator = new ValidateWithXSD(ref xml, _xsd);
 
-            var result = await validator.Validate();
+            var result = validator.Validate();
             return result;
         }
 
