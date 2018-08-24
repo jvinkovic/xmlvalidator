@@ -1,22 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace xxxTest
 {
-    static class Program
+    internal class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
+        private const string xsdPath = "test.xsd";
+
+        private static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            var content = File.ReadAllText(xsdPath);
+
+            var doc = XDocument.Parse(content);
+
+            var xs = XNamespace.Get("http://www.w3.org/2001/XMLSchema");
+
+            foreach (XElement element in doc.Descendants())
+            {
+                Console.WriteLine(element.NodeType.ToString()
+                    + " - " + element.Name.LocalName
+                    + " - "
+                    + string.Join(", ", element.Attributes().Select(a => a.ToString())));
+            }
         }
     }
 }
