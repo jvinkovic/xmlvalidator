@@ -58,6 +58,7 @@
             this.tbCurrentXSD = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.editorBox)).BeginInit();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -106,7 +107,6 @@
             this.editorBox.TabLength = 2;
             this.editorBox.Zoom = 100;
             this.editorBox.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.fctb_TextChanged);
-            this.editorBox.KeyPressed += new System.Windows.Forms.KeyPressEventHandler(this.editorBox_KeyPressed);
             // 
             // btnSave
             // 
@@ -333,6 +333,12 @@
             // 
             this.tooltip.AutomaticDelay = 300;
             // 
+            // contextMenu
+            // 
+            this.contextMenu.Name = "contextMenu";
+            this.contextMenu.Size = new System.Drawing.Size(181, 26);
+            this.contextMenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenu_ItemClicked);
+            // 
             // EditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -386,6 +392,7 @@
         private System.Windows.Forms.ToolStripMenuItem omitNamespaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem withNamespaceCheckToolStripMenuItem;
         private System.Windows.Forms.ToolTip tooltip;
+        private System.Windows.Forms.ContextMenuStrip contextMenu;
     }
 }
 

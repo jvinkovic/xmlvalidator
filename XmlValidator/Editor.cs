@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -7,6 +9,9 @@ namespace XmlValidator
 {
     public class Editor
     {
+        public NodeStatus CurrentNodeStatus { get; private set; } = NodeStatus.Closed;
+        public XSDTreeNode CurrentNode;
+
         public string XmlName = "Untitled";
 
         private string _xmlPath;
@@ -33,6 +38,8 @@ namespace XmlValidator
         public string OpenXSD(string path)
         {
             _xsd = new XSDData(path);
+            CurrentNode = _xsd.RootNode;
+
             return _xsd.Name;
         }
 
@@ -58,6 +65,93 @@ namespace XmlValidator
             }
 
             return true;
+        }
+
+        public void ResetCurrentNode()
+        {
+            CurrentNodeStatus = NodeStatus.Closed;
+            CurrentNode = _xsd.RootNode;
+        }
+
+        public HashSet<string> CurrentNodeElements()
+        {
+            if (null == CurrentNode)
+            {
+                return null;
+            }
+
+            var elements = new HashSet<string>();
+
+            var simpleElems = CurrentNode.Elements.Where(e => e.Value.ComplexType == false);
+            var complexElems = CurrentNode.Elements.Where(e => e.Value.ComplexType == true);
+            foreach (var el in simpleElems)
+            {
+                var complexTypes = complexElems.Where(ce => ce.Key == el.Value.Type);
+                if (complexTypes.Count() > 0)
+                {
+                    foreach (var cel in complexTypes.First().Value.Elements)
+                    {
+                        elements.Add(cel.Key);
+                    }
+                }
+                else
+                {
+                    elements.Add(el.Key);
+                }
+            }
+
+            return elements;
+        }
+
+        public HashSet<string> CurrentNodeAttributes()
+        {
+            if (null == CurrentNode)
+            {
+                return null;
+            }
+
+            var attributes = new HashSet<string>();
+
+            foreach (var at in CurrentNode.Attributes)
+            {
+                attributes.Add(at.Key + " : " + at.Value);
+            }
+
+            return attributes;
+        }
+
+        public void CurrentNodeOpening()
+        {
+            CurrentNodeStatus = NodeStatus.Opening;
+        }
+
+        public void CurrentNodeOpen(string nodeName)
+        {
+            CurrentNodeStatus = NodeStatus.Open;
+
+            XSDTreeNode node = null;
+            CurrentNode?.Elements.TryGetValue(nodeName, out node);
+            CurrentNode = node ?? CurrentNode;
+        }
+
+        public void CurrentNodeClosing()
+        {
+            CurrentNodeStatus = NodeStatus.Closing;
+        }
+
+        public void CurrentNodeClose()
+        {
+            CurrentNodeStatus = NodeStatus.Closed;
+            CurrentNode = CurrentNode != _xsd.RootNode ? CurrentNode.Parent ?? CurrentNode : CurrentNode;
+        }
+
+        public void CurrentNodeEnd(string nodeName)
+        {
+            CurrentNodeStatus = NodeStatus.Inside;
+
+            XSDTreeNode node = null;
+            CurrentNode?.Elements.TryGetValue(nodeName, out node);
+            CurrentNode = node ?? CurrentNode;
         }
 
         public bool SaveXMLAs(string xml)

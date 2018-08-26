@@ -7,11 +7,12 @@ namespace XmlValidator
     public partial class ValidationDetails : Form
     {
         private const string validLabel = "XML is VALID";
+        private const string noXSDValidLabel = "XML is VALID but no schema present for further validation";
         private const string invalidLabel = "XML is INVALID";
 
         private ValidationData _validationData;
 
-        public ValidationDetails(ValidationData validationData)
+        public ValidationDetails(ValidationData validationData, bool xsdPresent = true)
         {
             InitializeComponent();
             lbErrors.Hide();
@@ -19,7 +20,14 @@ namespace XmlValidator
 
             if (_validationData.Valid)
             {
-                lblValidity.Text = validLabel;
+                if (xsdPresent)
+                {
+                    lblValidity.Text = validLabel;
+                }
+                else
+                {
+                    lblValidity.Text = noXSDValidLabel;
+                }
                 lblValidity.ForeColor = Color.ForestGreen;
                 this.Size = new Size(this.Width, 160);
             }

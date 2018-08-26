@@ -11,7 +11,7 @@ namespace XmlValidator
 {
     public class XSDData
     {
-        public readonly XSDTreeNode RootNode = new XSDTreeNode("root");
+        public readonly XSDTreeNode RootNode = new XSDTreeNode("root", "type", false);
 
         public string Path { get; set; }
         public string Name { get; set; }
@@ -35,7 +35,7 @@ namespace XmlValidator
                 schema.Compile(new ValidationEventHandler(SchemaValidationHandler));
 
                 // Create Root Node
-                RootNode = new XSDTreeNode("root");
+                RootNode = new XSDTreeNode("root", "type", false);
 
                 DecodeSchema(schema, RootNode);
             }
@@ -117,43 +117,38 @@ namespace XmlValidator
             // if annotation, add a tree node and recurse for documentation and app info
             if (annot != null)
             {
-                newNode = new XSDTreeNode("--annotation--");
+                newNode = new XSDTreeNode("--annotation--", "--annotation--", false);
                 node.Add(newNode);
                 foreach (XmlSchemaObject schemaObject in annot.Items)
                 {
                     DecodeSchema2(schemaObject, newNode);
                 }
             }
-            else
-                // if attribute, add an attribute at tree node
-                if (attrib != null)
+            // if attribute, add an attribute at tree node
+            else if (attrib != null)
             {
                 node.AddAttribute(attrib.QualifiedName.Name, attrib.SchemaTypeName.Name);
             }
-            else
-                    // if facet, add a tree node
-                    if (facet != null)
+            // if facet, add a tree node
+            else if (facet != null)
             {
-                newNode = new XSDTreeNode(facet.ToString());
+                newNode = new XSDTreeNode(facet.ToString(), facet.ToString(), false);
                 node.Add(newNode);
             }
-            else
-                        // if documentation, add a tree node
-                        if (doc != null)
+            // if documentation, add a tree node
+            else if (doc != null)
             {
-                newNode = new XSDTreeNode("--documentation--");
+                newNode = new XSDTreeNode("--documentation--", "--documentation--", false);
                 node.Add(newNode);
             }
-            else
-                            // if app info, add a tree node
-                            if (appInfo != null)
+            // if app info, add a tree node
+            else if (appInfo != null)
             {
-                newNode = new XSDTreeNode("--app info--");
+                newNode = new XSDTreeNode("--app info--", "--app info--", false);
                 node.Add(newNode);
             }
-            else
-                                // if an element, determine whether the element is a simple type or a complex type
-                                if (element != null)
+            // if an element, determine whether the element is a simple type or a complex type
+            else if (element != null)
             {
                 XmlSchemaSimpleType st = element.SchemaType as XmlSchemaSimpleType;
                 XmlSchemaComplexType ct = element.SchemaType as XmlSchemaComplexType;
@@ -169,19 +164,19 @@ namespace XmlValidator
                     // this is a complex type element.  Recurse.
                     XSDTreeNode node2 = DecodeSchema2(ct, newNode);
                     node2.Name = element.Name;
+                    node2.ComplexType = true;
                 }
                 else
                 {
                     // This is a plain ol' fashioned element.
-                    newNode = new XSDTreeNode(element.QualifiedName.Name);
+                    newNode = new XSDTreeNode(element.QualifiedName.Name, element.SchemaTypeName.Name, false);
                     node.Add(newNode);
                 }
             }
-            else
-                                    // if a simple type, then add a tree node and recurse facets
-                                    if (simpleType != null)
+            // if a simple type, then add a tree node and recurse facets
+            else if (simpleType != null)
             {
-                newNode = new XSDTreeNode(simpleType.QualifiedName.Name);
+                newNode = new XSDTreeNode(simpleType.QualifiedName.Name, simpleType.BaseXmlSchemaType.Name, false);
                 node.Add(newNode);
                 XmlSchemaSimpleTypeRestriction rest = simpleType.Content as XmlSchemaSimpleTypeRestriction;
                 if (rest != null)
@@ -192,11 +187,10 @@ namespace XmlValidator
                     }
                 }
             }
-            else
-                                        // if a complex type, add a tree node and recurse its sequence
-                                        if (complexType != null)
+            // if a complex type, add a tree node and recurse its sequence
+            else if (complexType != null)
             {
-                newNode = new XSDTreeNode(complexType.Name);
+                newNode = new XSDTreeNode(complexType.Name, complexType.BaseXmlSchemaType.Name, true);
                 node.Add(newNode);
 
                 XmlSchemaSequence seq = complexType.Particle as XmlSchemaSequence;

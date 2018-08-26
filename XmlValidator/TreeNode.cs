@@ -8,12 +8,16 @@ namespace XmlValidator
         public readonly Dictionary<string, XSDTreeNode> Elements = new Dictionary<string, XSDTreeNode>();
         public readonly Dictionary<string, string> Attributes = new Dictionary<string, string>();
 
-        public string Name;
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public bool ComplexType { get; set; }
         public XSDTreeNode Parent { get; private set; }
 
-        public XSDTreeNode(string id)
+        public XSDTreeNode(string name, string type, bool complexType)
         {
-            this.Name = id;
+            this.Name = name;
+            this.Type = type;
+            this.ComplexType = complexType;
         }
 
         public XSDTreeNode GetElement(string id)

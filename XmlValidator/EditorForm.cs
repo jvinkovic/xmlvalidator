@@ -1,5 +1,7 @@
 ﻿using FastColoredTextBoxNS;
 using System;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -18,7 +20,7 @@ namespace XmlValidator
 
         {
             InitializeComponent();
-            this.Text = FORM_TITLE + "| Untitled";
+            this.Text = FORM_TITLE + " | Untitled";
 
             _editor = new Editor();
 
@@ -82,7 +84,7 @@ namespace XmlValidator
                 _editor.SetXSD(xsd);
             }
 
-            this.Text = FORM_TITLE + "| Untitled";
+            this.Text = FORM_TITLE + " | Untitled";
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -172,6 +174,23 @@ namespace XmlValidator
         private void fctb_TextChanged(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
         {
             _editor?.FileChanged();
+
+            // if no XSD is selected
+            if (null == _editor?.CurrentNode)
+            {
+                return;
+            }
+
+            _editor.ResetCurrentNode();
+            foreach (var c in editorBox.Text)
+            {
+                CharInputed(c, false);
+            }
+
+            if (editorBox.Text.Length > 0)
+            {
+                CharInputed(editorBox.Text.Last());
+            }
         }
 
         private void fontToolStripMenuItem_Click(object sender, EventArgs e)
@@ -225,9 +244,107 @@ namespace XmlValidator
             }
         }
 
-        private void editorBox_KeyPressed(object sender, KeyPressEventArgs e)
+        private void CharInputed(char keyChar, bool toOpen = true)
         {
-            // TODO handle key inputs and drop down suggestions
+            contextMenu.Items.Clear();
+
+            if (keyChar == '<')
+            {
+                _editor.CurrentNodeOpening();
+
+                var elements = _editor.CurrentNodeElements();
+                if (null != elements)
+                {
+                    foreach (var item in elements)
+                    {
+                        contextMenu.Items.Add(item);
+                    }
+                }
+            }
+            else if (keyChar == ' ' && _editor.CurrentNodeStatus == NodeStatus.Opening)
+            {
+                // get node name
+                var nodeName = GetCurrentNodeName();
+
+                _editor.CurrentNodeOpen(nodeName);
+
+                var attributes = _editor.CurrentNodeAttributes();
+                if (null != attributes)
+                {
+                    foreach (var item in attributes)
+                    {
+                        contextMenu.Items.Add(item);
+                    }
+                }
+            }
+            else if (keyChar == '>' && _editor.CurrentNodeStatus == NodeStatus.Opening)
+            {
+                // get node name
+                var nodeName = GetCurrentNodeName();
+
+                _editor.CurrentNodeEnd(nodeName);
+            }
+            else if (keyChar == '/')
+            {
+                var previousChar = editorBox.Text[editorBox.SelectionStart - 1];
+                if (previousChar == '<')
+                {
+                    _editor.CurrentNodeClosing();
+                }
+            }
+            else if (keyChar == '>')
+            {
+                if (_editor.CurrentNodeStatus == NodeStatus.Closing)
+                {
+                    _editor.CurrentNodeClose();
+                }
+                else if (_editor.CurrentNodeStatus == NodeStatus.Open)
+                {
+                    // get node name
+                    var nodeName = GetCurrentNodeName();
+
+                    _editor.CurrentNodeEnd(nodeName);
+                }
+            }
+            else
+            {
+                // nothing
+                return;
+            }
+
+            if (toOpen)
+            {
+                // get location and show the menu
+                var location = editorBox.PositionToPoint(editorBox.SelectionStart);
+                location.X += 3;
+                location.Y += contextMenu.Height / 2 + editorBox.Font.Height;
+
+                contextMenu.Show(this, location);
+            }
+        }
+
+        private string GetCurrentNodeName()
+        {
+            var start = editorBox.Text.LastIndexOf("<");
+            StringBuilder nodeName = new StringBuilder();
+            char currChar = editorBox.Text[start];
+            int i = start;
+            do
+            {
+                i++;
+                if (i < editorBox.Text.Length)
+                {
+                    currChar = editorBox.Text[i];
+                    nodeName.Append(currChar);
+                }
+                else
+                {
+                    break;
+                }
+            } while (currChar != ' ' && currChar != '>');
+
+            var name = nodeName.ToString().TrimEnd('>', ' ');
+            return name;
         }
 
         #endregion event handlers
@@ -268,13 +385,12 @@ namespace XmlValidator
             if (null == _editor.GetXSD())
             {
                 MessageBox.Show("XSD schema file not selected", "No XSD", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
             }
 
-            Task.Run(async () => CheckXML(omitNamespace));
+            Task.Run(() => CheckXML(omitNamespace));
         }
 
-        private async Task CheckXML(bool omitNamespace = false)
+        private void CheckXML(bool omitNamespace = false)
         {
             string xml = editorBox.Text;
 
@@ -319,12 +435,22 @@ namespace XmlValidator
                 return;
             }
 
-            var validationResult = _editor.CheckXML(xml, omitNamespace);
+            ValidationData validationResult = new ValidationData();
+            if (null != _editor.GetXSD())
+            {
+                validationResult = _editor.CheckXML(xml, omitNamespace);
+            }
 
             using (var validDetailsForm = new ValidationDetails(validationResult))
             {
                 validDetailsForm.ShowDialog();
             }
+        }
+
+        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            editorBox.Text += e.ClickedItem.Text;
+            editorBox.SelectionStart = editorBox.Text.Length; // put cursor to the end
         }
     }
 }

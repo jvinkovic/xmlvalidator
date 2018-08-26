@@ -25,7 +25,7 @@ namespace xxxTest
                 tr.Close();
                 CompileSchema(schema);
                 CreateRootNode();
-                DecodeSchema(schema, rootNode);
+                // DecodeSchema(schema, rootNode);
             }
             catch (Exception err)
             {
