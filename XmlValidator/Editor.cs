@@ -82,7 +82,7 @@ namespace XmlValidator
 
             var elements = new HashSet<string>();
 
-            var simpleElems = CurrentNode.Elements.Where(e => e.Value.ComplexType == false);
+            var simpleElems = CurrentNode.Elements.Where(e => e.Value.Element == true || e.Value.ComplexType == false);
             var complexElems = CurrentNode.Elements.Where(e => e.Value.ComplexType == true);
             foreach (var el in simpleElems)
             {

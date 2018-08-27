@@ -171,28 +171,6 @@ namespace XmlValidator
             CheckIt();
         }
 
-        private void fctb_TextChanged(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
-        {
-            _editor?.FileChanged();
-
-            // if no XSD is selected
-            if (null == _editor?.CurrentNode)
-            {
-                return;
-            }
-
-            _editor.ResetCurrentNode();
-            foreach (var c in editorBox.Text)
-            {
-                CharInputed(c, false);
-            }
-
-            if (editorBox.Text.Length > 0)
-            {
-                CharInputed(editorBox.Text.Last());
-            }
-        }
-
         private void fontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (FontDialog fd = new FontDialog())
@@ -244,7 +222,31 @@ namespace XmlValidator
             }
         }
 
-        private void CharInputed(char keyChar, bool toOpen = true)
+        private void fctb_TextChanged(object sender, FastColoredTextBoxNS.TextChangedEventArgs e)
+        {
+            _editor?.FileChanged();
+
+            // if no XSD is selected
+            if (null == _editor?.CurrentNode)
+            {
+                return;
+            }
+
+            _editor.ResetCurrentNode();
+            var len = editorBox.Text.Length;
+            for (int i = 0; i < len - 1; i++)
+            {
+                var c = editorBox.Text[i];
+                CharInputed(c, false, i);
+            }
+
+            if (len > 0)
+            {
+                CharInputed(editorBox.Text.Last());
+            }
+        }
+
+        private void CharInputed(char keyChar, bool toOpen = true, int lastPostion = -1)
         {
             contextMenu.Items.Clear();
 
@@ -264,7 +266,7 @@ namespace XmlValidator
             else if (keyChar == ' ' && _editor.CurrentNodeStatus == NodeStatus.Opening)
             {
                 // get node name
-                var nodeName = GetCurrentNodeName();
+                var nodeName = GetCurrentNodeName(lastPostion);
 
                 _editor.CurrentNodeOpen(nodeName);
 
@@ -280,9 +282,11 @@ namespace XmlValidator
             else if (keyChar == '>' && _editor.CurrentNodeStatus == NodeStatus.Opening)
             {
                 // get node name
-                var nodeName = GetCurrentNodeName();
+                var nodeName = GetCurrentNodeName(lastPostion);
 
                 _editor.CurrentNodeEnd(nodeName);
+
+                toOpen = false;
             }
             else if (keyChar == '/')
             {
@@ -291,6 +295,8 @@ namespace XmlValidator
                 {
                     _editor.CurrentNodeClosing();
                 }
+
+                toOpen = false;
             }
             else if (keyChar == '>')
             {
@@ -301,10 +307,12 @@ namespace XmlValidator
                 else if (_editor.CurrentNodeStatus == NodeStatus.Open)
                 {
                     // get node name
-                    var nodeName = GetCurrentNodeName();
+                    var nodeName = GetCurrentNodeName(lastPostion);
 
                     _editor.CurrentNodeEnd(nodeName);
                 }
+
+                toOpen = false;
             }
             else
             {
@@ -317,15 +325,23 @@ namespace XmlValidator
                 // get location and show the menu
                 var location = editorBox.PositionToPoint(editorBox.SelectionStart);
                 location.X += 3;
-                location.Y += contextMenu.Height / 2 + editorBox.Font.Height;
+                location.Y += editorBox.Font.Height * 3;
 
                 contextMenu.Show(this, location);
             }
         }
 
-        private string GetCurrentNodeName()
+        private string GetCurrentNodeName(int lastPosition = -1)
         {
-            var start = editorBox.Text.LastIndexOf("<");
+            var start = 0;
+            if (lastPosition > -1)
+            {
+                start = editorBox.Text.Substring(0, lastPosition).LastIndexOf("<");
+            }
+            else
+            {
+                start = editorBox.Text.LastIndexOf("<");
+            }
             StringBuilder nodeName = new StringBuilder();
             char currChar = editorBox.Text[start];
             int i = start;

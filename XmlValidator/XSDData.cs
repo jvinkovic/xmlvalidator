@@ -76,44 +76,6 @@ namespace XmlValidator
             XmlSchemaSimpleType simpleType = obj as XmlSchemaSimpleType;
             XmlSchemaComplexType complexType = obj as XmlSchemaComplexType;
 
-            // If the current node is the root node of the tree, then we are
-            // possibly adding a global attribute, element, simple type, or complex type.
-            if (node == RootNode)
-            {
-                if (attrib != null)
-                {
-                    if (attrib.Name != null)
-                    {
-                        // add to global list
-                        //cbGlobalTypes.Items.Add(new GlobalElementType(attrib.Name, attrib));
-                    }
-                }
-                else if (element != null)
-                {
-                    if (element.Name != null)
-                    {
-                        // add to global list
-                        //cbGlobalTypes.Items.Add(new GlobalElementType(element.Name, element));
-                    }
-                }
-                else if (simpleType != null)
-                {
-                    if (simpleType.Name != null)
-                    {
-                        // add to global list
-                        //cbGlobalTypes.Items.Add(new GlobalElementType(simpleType.Name, simpleType));
-                    }
-                }
-                else if (complexType != null)
-                {
-                    if (complexType.Name != null)
-                    {
-                        // add to global list
-                        // cbGlobalTypes.Items.Add(new GlobalElementType(complexType.Name, complexType));
-                    }
-                }
-            }
-
             // if annotation, add a tree node and recurse for documentation and app info
             if (annot != null)
             {
@@ -158,13 +120,18 @@ namespace XmlValidator
                     // this is a simple type element.  Recurse.
                     XSDTreeNode node2 = DecodeSchema2(st, newNode);
                     node2.Name = element.Name;
+                    node2.Element = true;
+                    node2.ComplexType = false;
                 }
                 else if (ct != null)
                 {
                     // this is a complex type element.  Recurse.
                     XSDTreeNode node2 = DecodeSchema2(ct, newNode);
+                    newNode.Remove(node2);
                     node2.Name = element.Name;
+                    node2.Element = true;
                     node2.ComplexType = true;
+                    newNode.Add(node2);
                 }
                 else
                 {
@@ -190,7 +157,15 @@ namespace XmlValidator
             // if a complex type, add a tree node and recurse its sequence
             else if (complexType != null)
             {
-                newNode = new XSDTreeNode(complexType.Name, complexType.BaseXmlSchemaType.Name, true);
+                if (null == complexType.Name)
+                {
+                    newNode = new XSDTreeNode("--tmp-name--", complexType.BaseXmlSchemaType.Name, true);
+                }
+                else
+                {
+                    newNode = new XSDTreeNode(complexType.Name, complexType.BaseXmlSchemaType.Name, true);
+                }
+
                 node.Add(newNode);
 
                 XmlSchemaSequence seq = complexType.Particle as XmlSchemaSequence;

@@ -9,6 +9,7 @@ namespace XmlValidator
         public readonly Dictionary<string, string> Attributes = new Dictionary<string, string>();
 
         public string Name { get; set; }
+        public bool Element { get; set; } = false;
         public string Type { get; set; }
         public bool ComplexType { get; set; }
         public XSDTreeNode Parent { get; private set; }
@@ -34,6 +35,12 @@ namespace XmlValidator
 
             item.Parent = this;
             this.Elements.Add(item.Name, item);
+        }
+
+        public void Remove(XSDTreeNode item)
+        {
+            item.Parent = null;
+            this.Elements.Remove(item.Name);
         }
 
         public string GetAttributeType(string name)
