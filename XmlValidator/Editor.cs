@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -82,21 +83,42 @@ namespace XmlValidator
 
             var elements = new HashSet<string>();
 
-            var simpleElems = CurrentNode.Elements.Where(e => e.Value.Element == true || e.Value.ComplexType == false);
-            var complexElems = CurrentNode.Elements.Where(e => e.Value.ComplexType == true);
-            foreach (var el in simpleElems)
+            foreach (var cne in CurrentNode.Elements.Where(e => e.Value.Element == true))
             {
-                var complexTypes = complexElems.Where(ce => ce.Key == el.Value.Type);
+                elements.Add(cne.Key);
+            }
+
+            if (elements.Count == 0)
+            {
+                var complexElems = _xsd.RootNode.Elements.Where(e => e.Value.ComplexType == true);
+
+                var simpleElems = CurrentNode.Elements.Where(e => e.Value.Element == true || e.Value.ComplexType == false);
+                foreach (var el in simpleElems)
+                {
+                    //var type = el.Value.Type?.Substring(el.Value.Type.LastIndexOf(":") + 1);
+                    //var complexTypes = complexElems.Where(ce => ce.Key == type);
+                    //if (complexTypes.Count() > 0)
+                    //{
+                    //    foreach (var cel in complexTypes.First().Value.Elements)
+                    //    {
+                    //        elements.Add(cel.Key);
+                    //    }
+                    //}
+                    //else
+                    {
+                        elements.Add(el.Key);
+                    }
+                }
+
+                var type = CurrentNode.Type?.Substring(CurrentNode.Type.LastIndexOf(":") + 1);
+                var complexTypes = complexElems.Where(ce => ce.Key == type);
+
                 if (complexTypes.Count() > 0)
                 {
                     foreach (var cel in complexTypes.First().Value.Elements)
                     {
                         elements.Add(cel.Key);
                     }
-                }
-                else
-                {
-                    elements.Add(el.Key);
                 }
             }
 
@@ -151,7 +173,26 @@ namespace XmlValidator
 
             XSDTreeNode node = null;
             CurrentNode?.Elements.TryGetValue(nodeName, out node);
-            CurrentNode = node ?? CurrentNode;
+            CurrentNode = node ?? GetFromComplex(CurrentNode, nodeName) ?? CurrentNode;
+        }
+
+        private XSDTreeNode GetFromComplex(XSDTreeNode startNode, string nodeName)
+        {
+            XSDTreeNode node = null;
+
+            var complexElems = _xsd.RootNode.Elements.Where(e => e.Value.ComplexType == true);
+
+            var type = CurrentNode.Type?.Substring(CurrentNode.Type.LastIndexOf(":") + 1);
+            var complexTypes = complexElems.Where(ce => ce.Key == type);
+
+            if (complexTypes.Count() > 0)
+            {
+                complexTypes?.First().Value?.Elements?.TryGetValue(nodeName, out node);
+            }
+
+            node?.UpdateParent(startNode);
+
+            return node;
         }
 
         public bool SaveXMLAs(string xml)

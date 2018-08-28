@@ -136,7 +136,8 @@ namespace XmlValidator
                 else
                 {
                     // This is a plain ol' fashioned element.
-                    newNode = new XSDTreeNode(element.QualifiedName.Name, element.SchemaTypeName.Name, false);
+                    newNode = new XSDTreeNode(element.QualifiedName.Name, element.ElementSchemaType?.Name ?? element.SchemaTypeName.Name, false);
+                    newNode.Element = true;
                     node.Add(newNode);
                 }
             }

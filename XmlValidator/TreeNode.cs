@@ -21,6 +21,11 @@ namespace XmlValidator
             this.ComplexType = complexType;
         }
 
+        public void UpdateParent(XSDTreeNode node)
+        {
+            this.Parent = node;
+        }
+
         public XSDTreeNode GetElement(string id)
         {
             return this.Elements[id];
