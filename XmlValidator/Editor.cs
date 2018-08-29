@@ -13,6 +13,9 @@ namespace XmlValidator
         public NodeStatus CurrentNodeStatus { get; private set; } = NodeStatus.Closed;
         public XSDTreeNode CurrentNode;
 
+        public const string ATTR_SEPARATOR = " : ";
+        public const string ATTR_TAG = "attr";
+
         public string XmlName = "Untitled";
 
         private string _xmlPath;
@@ -95,19 +98,7 @@ namespace XmlValidator
                 var simpleElems = CurrentNode.Elements.Where(e => e.Value.Element == true || e.Value.ComplexType == false);
                 foreach (var el in simpleElems)
                 {
-                    //var type = el.Value.Type?.Substring(el.Value.Type.LastIndexOf(":") + 1);
-                    //var complexTypes = complexElems.Where(ce => ce.Key == type);
-                    //if (complexTypes.Count() > 0)
-                    //{
-                    //    foreach (var cel in complexTypes.First().Value.Elements)
-                    //    {
-                    //        elements.Add(cel.Key);
-                    //    }
-                    //}
-                    //else
-                    {
-                        elements.Add(el.Key);
-                    }
+                    elements.Add(el.Key);
                 }
 
                 var type = CurrentNode.Type?.Substring(CurrentNode.Type.LastIndexOf(":") + 1);
@@ -127,16 +118,32 @@ namespace XmlValidator
 
         public HashSet<string> CurrentNodeAttributes()
         {
-            if (null == CurrentNode)
-            {
-                return null;
-            }
-
             var attributes = new HashSet<string>();
 
             foreach (var at in CurrentNode.Attributes)
             {
-                attributes.Add(at.Key + " : " + at.Value);
+                attributes.Add(at.Key + ATTR_SEPARATOR + at.Value);
+            }
+
+            foreach (var cat in CurrentNode.Attributes)
+            {
+                attributes.Add(cat.Key + ATTR_SEPARATOR + cat.Value);
+            }
+
+            if (attributes.Count == 0)
+            {
+                var complexElems = _xsd.RootNode.Elements.Where(e => e.Value.ComplexType == true);
+
+                var type = CurrentNode.Type?.Substring(CurrentNode.Type.LastIndexOf(":") + 1);
+                var complexTypes = complexElems.Where(ce => ce.Key == type);
+
+                if (complexTypes.Count() > 0)
+                {
+                    foreach (var at in complexTypes.First().Value.Attributes)
+                    {
+                        attributes.Add(at.Key + ATTR_SEPARATOR + at.Value);
+                    }
+                }
             }
 
             return attributes;

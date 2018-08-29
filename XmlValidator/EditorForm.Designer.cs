@@ -89,6 +89,7 @@
             this.editorBox.CommentPrefix = null;
             this.editorBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.editorBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.editorBox.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.editorBox.Hotkeys = resources.GetString("editorBox.Hotkeys");
             this.editorBox.IsReplaceMode = false;
             this.editorBox.Language = FastColoredTextBoxNS.Language.XML;
@@ -107,6 +108,7 @@
             this.editorBox.TabLength = 2;
             this.editorBox.Zoom = 100;
             this.editorBox.TextChanged += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.fctb_TextChanged);
+            this.editorBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.editorBox_KeyDown);
             // 
             // btnSave
             // 
@@ -336,7 +338,7 @@
             // contextMenu
             // 
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 26);
+            this.contextMenu.Size = new System.Drawing.Size(61, 4);
             this.contextMenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenu_ItemClicked);
             // 
             // EditorForm

@@ -16,6 +16,8 @@ namespace XmlValidator
 
         private ShowXSD xsdForm;
 
+        private Keys LastKeyPressed = Keys.A;
+
         public EditorForm()
 
         {
@@ -233,7 +235,7 @@ namespace XmlValidator
             }
 
             _editor.ResetCurrentNode();
-            var len = editorBox.Text.Length;
+            var len = editorBox.SelectionStart;
             for (int i = 0; i < len - 1; i++)
             {
                 var c = editorBox.Text[i];
@@ -242,7 +244,8 @@ namespace XmlValidator
 
             if (len > 0)
             {
-                CharInputed(editorBox.Text.Last());
+                bool notDeleting = LastKeyPressed != Keys.Back && LastKeyPressed != Keys.Delete;
+                CharInputed(editorBox.Text[len - 1], notDeleting, len - 1);
             }
         }
 
@@ -263,19 +266,24 @@ namespace XmlValidator
                     }
                 }
             }
-            else if (keyChar == ' ' && _editor.CurrentNodeStatus == NodeStatus.Opening)
+            else if (keyChar == ' ')
             {
-                // get node name
-                var nodeName = GetCurrentNodeName(lastPostion);
+                if (_editor.CurrentNodeStatus == NodeStatus.Opening)
+                {
+                    // get node name
+                    var nodeName = GetCurrentNodeName(lastPostion);
 
-                _editor.CurrentNodeOpen(nodeName);
+                    _editor.CurrentNodeOpen(nodeName);
+                }
 
                 var attributes = _editor.CurrentNodeAttributes();
                 if (null != attributes)
                 {
                     foreach (var item in attributes)
                     {
-                        contextMenu.Items.Add(item);
+                        var tsItem = new ToolStripMenuItem(item);
+                        tsItem.Tag = Editor.ATTR_TAG;
+                        contextMenu.Items.Add(tsItem);
                     }
                 }
             }
@@ -290,13 +298,21 @@ namespace XmlValidator
             }
             else if (keyChar == '/')
             {
-                var previousChar = editorBox.Text[editorBox.SelectionStart - 1];
+                if (null == _editor.CurrentNode.Parent)
+                {
+                    return;
+                }
+
+                var previousChar = ' ';
+                if (lastPostion > 0)
+                {
+                    previousChar = editorBox.Text[lastPostion - 1];
+                }
                 if (previousChar == '<')
                 {
                     _editor.CurrentNodeClosing();
+                    contextMenu.Items.Add(_editor.CurrentNode.Name + ">");
                 }
-
-                toOpen = false;
             }
             else if (keyChar == '>')
             {
@@ -361,6 +377,31 @@ namespace XmlValidator
 
             var name = nodeName.ToString().TrimEnd('>', ' ');
             return name;
+        }
+
+        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            var text = e.ClickedItem.Text;
+            var cursorPosition = editorBox.SelectionStart + text.Length;
+
+            // if it is attribute it shpulh have tag Editor.ATTR_TAG
+            if ((string)e.ClickedItem.Tag == Editor.ATTR_TAG)
+            {
+                // remove data type and add '='
+                text = text.Substring(0, text.LastIndexOf(Editor.ATTR_SEPARATOR)) + "=\"\"";
+
+                cursorPosition = editorBox.SelectionStart + text.Length - 1;
+            }
+
+            editorBox.Text = editorBox.Text.Insert(editorBox.SelectionStart, text);
+
+            // put cursor after insert or one before insert end if attribute - before closing '"'
+            editorBox.SelectionStart = cursorPosition;
+        }
+
+        private void editorBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            LastKeyPressed = e.KeyCode;
         }
 
         #endregion event handlers
@@ -461,12 +502,6 @@ namespace XmlValidator
             {
                 validDetailsForm.ShowDialog();
             }
-        }
-
-        private void contextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            editorBox.Text += e.ClickedItem.Text;
-            editorBox.SelectionStart = editorBox.Text.Length; // put cursor to the end
         }
     }
 }
