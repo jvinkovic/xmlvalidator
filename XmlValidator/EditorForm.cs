@@ -276,14 +276,17 @@ namespace XmlValidator
                     _editor.CurrentNodeOpen(nodeName);
                 }
 
-                var attributes = _editor.CurrentNodeAttributes();
-                if (null != attributes)
+                if (_editor.CurrentNodeStatus == NodeStatus.Open)
                 {
-                    foreach (var item in attributes)
+                    var attributes = _editor.CurrentNodeAttributes();
+                    if (null != attributes)
                     {
-                        var tsItem = new ToolStripMenuItem(item);
-                        tsItem.Tag = Editor.ATTR_TAG;
-                        contextMenu.Items.Add(tsItem);
+                        foreach (var item in attributes)
+                        {
+                            var tsItem = new ToolStripMenuItem(item);
+                            tsItem.Tag = Editor.ATTR_TAG;
+                            contextMenu.Items.Add(tsItem);
+                        }
                     }
                 }
             }
